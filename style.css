@@ -1,0 +1,120 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f7f6;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Authentication Page Styles */
+#auth-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: auto; /* Centers the form on the index page */
+    text-align: center;
+}
+
+#auth-container h2 {
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+}
+
+#auth-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#auth-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+#auth-container button:hover {
+    background-color: #2980b9;
+}
+
+#auth-container p {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+#auth-container a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+/* Home Page Navigation */
+nav {
+    background-color: #2c3e50;
+    padding: 1rem 2rem;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li {
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+nav ul li:hover {
+    color: #3498db;
+}
+
+/* Home Page Content */
+main {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+main h1 {
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+main p {
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+    color: #555;
+}
+/* Logout button akka addatti mul'atuuf */
+nav ul li:last-child {
+    background-color: #fceae9;
+    padding: 5px 15px;
+    border-radius: 4px;
+    border: 1px solid #e74c3c;
+    transition: 0.3s;
+}
+
+nav ul li:last-child:hover {
+    background-color: #e74c3c;
+    color: white !important;
+}
+

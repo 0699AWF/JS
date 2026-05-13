@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Akka fakkiiwwan babbareedanii tarreegalan */
+        #gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .photo-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            width: 200px;
+        }
+        .photo-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        #adminPanel {
+            display: none; /* Jalqaba irratti dhokataadha */
+            background: #fdf2f2;
+            border: 2px solid #e74c3c;
+            padding: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+    <ul>
+        <li>Home</li>
+        <!-- KANA BAKKA BUUSI -->
+        <li><a href="profile.html" style="text-decoration: none; color: inherit;">Profile</a></li>
+        
+        <li>Settings</li>
+        <li onclick="checkAdmin()" style="cursor:pointer; color: #3498db;">Admin Panel</li>
+        <li onclick="logout()" style="color: #e74c3c; font-weight: bold; cursor:pointer;">Logout</li>
+    </ul>
+</nav>
+
+
+    <main>
+        <h1>Welcome Back</h1>
+        
+        <!-- --- BAKKA FAKKII HEDDUU OL-FE'AN --- -->
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; border: 1px solid #eee;">
+            <h3>Fakkii Hedduu Dabali</h3>
+            <input type="file" id="imageInput" accept="image/*" multiple> <!-- 'multiple' fakkii hedduuf -->
+            <br><br>
+            <input type="text" id="imageDesc" placeholder="Ibsa fakkii barreessi..." style="width: 100%; padding: 8px; margin-bottom: 10px;">
+            <button onclick="uploadPhotos()" style="background: #2ecc71; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Upload</button>
+        </div>
+
+        <!-- Bakka Fakkiiwwan hundumtuu itti mul'atan -->
+        <div id="gallery"></div>
+
+        <!-- --- ADMIN PANEL (GOCHA HORDUFUUF) --- -->
+        <div id="adminPanel">
+            <h3>Admin Dashboard: User Activity</h3>
+            <div id="activityLogs">
+                <p>Activity: System Started.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const gallery = document.getElementById('gallery');
+        const logs = document.getElementById('activityLogs');
+
+        // 1. FAKKII HEDDUU OL-FE'UU FI IBSASAA WALIIN AGARSIISUU
+        function uploadPhotos() {
+            const fileInput = document.getElementById('imageInput');
+            const descInput = document.getElementById('imageDesc');
+            const files = fileInput.files;
+
+            if (files.length === 0) {
+                alert("Maaloo fakkii filadhu!");
+                return;
+            }
+
+            // Fakkiiwwan hunda tokko tokkoon dubbisuu
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Kaardii fakkii uumuu
+                    const card = document.createElement('div');
+                    card.className = 'photo-card';
+                    card.innerHTML = `
+                        <img src="${e.target.result}">
+                        <p><strong>Ibsa:</strong> ${descInput.value || 'Ibsa hin qabu'}</p>
+                    `;
+                    gallery.appendChild(card);
+                    
+                    // Admin irratti 'Log' galmeessi
+                    addLog(`Fayyadamaan fakkii "${file.name}" jedhamu ol-fe'eera.`);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Erga ol-fe'amee booda bakka barreeffamaa qulqulleessi
+            descInput.value = "";
+            fileInput.value = "";
+        }
+
+        // 2. LOGIC ADMIN (Gocha fayyadamaa hordofuuf)
+        function addLog(message) {
+            const time = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('p');
+            logEntry.innerHTML = `[${time}] ${message}`;
+            logs.prepend(logEntry); // Log haaraa gara gubbaatti fidi
+        }
+
+        function checkAdmin() {
+            const pw = prompt("Password Admin Galchi (Fkn: 1234):");
+            if (pw === "1234") {
+                document.getElementById('adminPanel').style.display = "block";
+                alert("Admin Panel Banameera!");
+            } else {
+                alert("Password Dogoggora!");
+            }
+        }
+
+        // 3. LOGOUT
+        function logout() {
+            if (confirm("Dhuguma logout gochuu barbaadduu?")) {
+                window.location.href = "index.html";
+            }
+        }
+    </script>
+</body>
+</html>

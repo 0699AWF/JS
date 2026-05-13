@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile & Social</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
+        .post-card { border: 1px solid #ddd; margin-top: 15px; padding: 15px; border-radius: 8px; }
+        .post-card img, .post-card video { max-width: 100%; border-radius: 5px; }
+        #chatBox { height: 200px; border: 1px solid #ccc; overflow-y: scroll; padding: 10px; background: #fafafa; }
+        #adminView { display: none; background: #333; color: white; padding: 20px; margin-top: 30px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <ul>
+        <li><a href="home.html">Home</a></li>
+        <li style="font-weight: bold; color: blue;">Profile</li>
+        <li onclick="checkAdmin()" style="cursor:pointer; color:red;">Admin Panel</li>
+    </ul>
+</nav>
+
+<div class="container">
+    <!-- 1. PROFILE CREATION -->
+    <div id="profileSetup">
+        <h2>Profile Kee Uumi</h2>
+        <input type="text" id="userName" placeholder="Maqaa kee...">
+        <input type="file" id="userPic" accept="image/*">
+        <button onclick="saveProfile()">Profile Save Godhi</button>
+    </div>
+
+    <!-- 2. USER PROFILE VIEW & POSTING -->
+    <div id="userProfile" class="hidden">
+        <div id="profileHeader" style="text-align: center;"></div>
+        <hr>
+        <h3>Wanta Haaraa Share Godhi</h3>
+        <textarea id="postText" placeholder="Maal yaadaa jirta?" style="width: 95%;"></textarea><br>
+        <input type="file" id="postFile" accept="image/*,video/*">
+        <button onclick="createPost()">Post Godhi</button>
+
+        <div id="feed">
+            <h4>Feed (Content Kee)</h4>
+        </div>
+
+        <hr>
+        <!-- 3. SIMPLE CHAT -->
+        <h3>Chat (Ofii kee waliin ykn hiriyaa)</h3>
+        <div id="chatBox"></div>
+        <input type="text" id="chatMsg" placeholder="Dubbii barreessi...">
+        <button onclick="sendMessage()">Ergi</button>
+    </div>
+
+    <!-- 4. ADMIN PANEL VIEW -->
+    <div id="adminView">
+        <h2>Admin Panel: Users & Activity</h2>
+        <div id="adminLogs"></div>
+    </div>
+</div>
+
+<script>
+    let currentUser = null;
+    let allUsers = JSON.parse(localStorage.getItem('allUsers')) || [];
+
+    // PROFILE SAVE GODHUU
+    function saveProfile() {
+        const name = document.getElementById('userName').value;
+        const pic = document.getElementById('userPic').files[0];
+
+        if (!name) return alert("Maqaa galchi!");
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            currentUser = { name: name, profilePic: e.target.result, posts: [] };
+            allUsers.push(currentUser);
+            localStorage.setItem('allUsers', JSON.stringify(allUsers)); // LocalStorage irratti ol-kaaya
+            showProfile();
+        };
+        if(pic) reader.readAsDataURL(pic);
+        else { currentUser = { name: name, profilePic: '', posts: [] }; showProfile(); }
+    }
+
+    function showProfile() {
+        document.getElementById('profileSetup').classList.add('hidden');
+        document.getElementById('userProfile').classList.remove('hidden');
+        document.getElementById('profileHeader').innerHTML = `
+            <img src="${currentUser.profilePic}" style="width:100px; height:100px; border-radius:50%; background:#eee;">
+            <h2>${currentUser.name}</h2>
+        `;
+    }
+
+    // CONTENT (PHOTO/VIDEO) SHARE GODHUU
+    function createPost() {
+        const text = document.getElementById('postText').value;
+        const file = document.getElementById('postFile').files[0];
+        const feed = document.getElementById('feed');
+
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post-card';
+        postDiv.innerHTML = `<p><strong>${currentUser.name}:</strong> ${text}</p>`;
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (file.type.includes('image')) {
+                    postDiv.innerHTML += `<img src="${e.target.result}">`;
+                } else if (file.type.includes('video')) {
+                    postDiv.innerHTML += `<video controls src="${e.target.result}"></video>`;
+                }
+                feed.prepend(postDiv);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            feed.prepend(postDiv);
+        }
+    }
+
+    // CHAT SYSTEM
+    function sendMessage() {
+        const msg = document.getElementById('chatMsg').value;
+        const chatBox = document.getElementById('chatBox');
+        if(msg) {
+            chatBox.innerHTML += `<p><strong>Ati:</strong> ${msg}</p>`;
+            document.getElementById('chatMsg').value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
+
+    // ADMIN LOGIC
+    function checkAdmin() {
+        const pw = prompt("Admin Password:");
+        if(pw === "admin123") {
+            const adminDiv = document.getElementById('adminView');
+            const adminLogs = document.getElementById('adminLogs');
+            adminDiv.style.display = "block";
+            
+            adminLogs.innerHTML = ""; // Qulqulleessi
+            allUsers.forEach(user => {
+                adminLogs.innerHTML += `<p>User: ${user.name} | Profile Pic: Yes</p>`;
+            });
+        }
+    }
+</script>
+</body>
+</html>
